@@ -10,7 +10,7 @@ A mechanics-informed deep learning constitutive model for sequential prediction 
 
 MIDLCM integrates deep learning with classical mechanics principles to simultaneously predict macroscopic stress responses and microstructural evolution (dislocation density and twin volume fraction) under varying strain rates. Unlike conventional DL constitutive models that focus solely on stress-strain mapping, MIDLCM explicitly tracks internal state variables, providing mechanism-level interpretability.
 
-![Architecture](docs/architecture.png)
+![Architecture](architecture.png)
 
 ### Key Features
 
