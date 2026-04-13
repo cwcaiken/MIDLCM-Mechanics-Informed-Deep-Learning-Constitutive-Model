@@ -13,7 +13,7 @@ MIDLCM integrates deep learning with classical mechanics principles to simultane
 <p align="center">
   <img src="architecture.png" alt="Architecture" width="500">
 </p>
-<p align="center">图 1 Architecture</p>
+<p align="center">Figure 1 Architecture</p>
 ### Key Features
 
 - **Multi-output prediction**: Simultaneously predicts stress evolution, dislocation density, and twin volume fraction
