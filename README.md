@@ -42,20 +42,6 @@ $$\mathcal{L} = \lambda_1 \mathcal{L}_{\text{MSE}} + \lambda_2 \mathcal{L}_{\tex
 
 where $\lambda_1 = 1.0$ and $\lambda_{2-4} = 0.1$.
 
-## Model Configuration
-
-Optimal hyperparameters determined via Bayesian optimization (Tree-structured Parzen Estimator):
-
-| Hyperparameter                | Value    |
-| ----------------------------- | -------- |
-| GRU hidden dimensions ($d_G$) | 256      |
-| GRU layers ($N_G$)            | 2        |
-| Embedding dimensions ($d_E$)  | 3        |
-| MHA heads ($h$)               | 4        |
-| FFN hidden dimensions ($d_F$) | 128      |
-| Total parameters              | ~1.00M   |
-| Inference time (single case)  | ~5.91 ms |
-
 ## Dataset
 
 Training data is generated using the calibrated EVPSC (Elasto-Visco-Plastic Self-Consistent) crystal plasticity model for **CrFeNi medium-entropy alloy**:
@@ -66,13 +52,6 @@ Training data is generated using the calibrated EVPSC (Elasto-Visco-Plastic Self
 - **Total cases**: 756 (across 6 strain rates, multiple loading angles, 3 crystallographic planes)
 - **Train/Test split**: 4:1 ratio (case-based splitting)
 - **Sequence length**: 100 time steps (max equivalent strain = 0.16)
-
-### Input/Output Features
-
-|            | Features                                                     | Dimensions |
-| ---------- | ------------------------------------------------------------ | ---------- |
-| **Input**  | Strain history ($\varepsilon_t$) + Strain rate ($\dot{\varepsilon}$) | 6 + 1      |
-| **Output** | Stress ($\sigma_t$) + Dislocation density ($\rho$) + Twin volume fraction ($f_{\text{twin}}$) | 3 + 1 + 1  |
 
 ## Installation
 
@@ -167,31 +146,3 @@ with torch.no_grad():
 pred_micro, pred_stress, attn_weights = model(x, rate, return_attention=True)
 # attn_weights: (batch, seq_len, seq_len) attention heatmap
 ```
-
-## Training Configuration
-
-| Parameter             | Value                                                     |
-| --------------------- | --------------------------------------------------------- |
-| Optimizer             | AdamW ($\beta_1$=0.9, $\beta_2$=0.999, weight decay=0.01) |
-| Learning rate         | 0.001 (cosine annealing with 10% warm-up)                 |
-| Epochs                | 1000                                                      |
-| Batch size            | 64                                                        |
-| Gradient clipping     | max norm = 1.0                                            |
-| Weight initialization | Xavier                                                    |
-| Checkpoint selection  | Best validation loss                                      |
-
-## Results
-
-### Performance Summary
-
-| Model Variant               | MSE       | MAE       | Params    | Inference   |
-| --------------------------- | --------- | --------- | --------- | ----------- |
-| GRU (baseline)              | 0.062     | 0.184     | 0.74M     | 5.17 ms     |
-| + MHA                       | 0.036     | 0.115     | 1.00M     | 5.75 ms     |
-| + MI Layer                  | 0.031     | 0.111     | 1.00M     | 5.91 ms     |
-| **+ MI Loss (Full MIDLCM)** | **0.028** | **0.100** | **1.00M** | **5.91 ms** |
-
-### Robustness
-
-- **5-fold cross-validation**: MSE = 0.0288 +/- 0.0010, MAE = 0.1016 +/- 0.0024
-- **Multi-seed repeats**: MSE = 0.0282 +/- 0.0005, MAE = 0.1002 +/- 0.0013
